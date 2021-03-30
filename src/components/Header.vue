@@ -15,20 +15,47 @@
                     </span>
                     <el-dropdown-menu slot="dropdown" >
                         <el-dropdown-item @click.native="signout">退出登录</el-dropdown-item>
+                        <el-dropdown-item @click.native="changPwd">修改密码</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
+
+              <!-- 编辑密码 -->
+      <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" >
+       <el-form ref="form" :model="form" label-width="80px">
+            <el-form-item label="原密码">
+                <el-input v-model="form.oldPwd"></el-input>
+            </el-form-item>
+            <el-form-item label="新密码">
+                <el-input v-model="form.newPwd"></el-input>
+            </el-form-item>
+            <el-form-item label="再次输入新密码">
+                <el-input v-model="form.newPwd1"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="save()">保存</el-button>
+                <el-button  @click="dialogVisible = false">取消</el-button>
+            </el-form-item>
+        </el-form>
+     </el-dialog>
         </div>
 </template>
 
 <script>
 import screenfull from 'screenfull'
+import axios from 'axios'
 export default {
     data(){
         return {
               fullscreen: false,
               extend:false,
-              user:null
+              user:null,
+              dialogVisible:false,
+              form:{
+                  oldPwd:'',
+                  newPwd:'',
+                  newPwd1:'',
+              }
         }
     },
     mounted(){
@@ -53,6 +80,33 @@ export default {
       signout:function(){
           this.$router.push('/')
           console.log(1);
+      },
+      changPwd:function(){
+          this.dialogVisible = true 
+      },
+      save:function(){
+          if(this.form.newPwd !== this.form.newPwd1 ) {
+              this.$message.error("两次密码不相等")
+          }else {
+                axios({
+                method: "POST", //请求方式
+                url: "/api/backGround/login/changePwd", //请求地址
+                data:this.form
+                }).then((res) => {
+                if (res.status === 200) {
+                    this.dialogVisible = false
+                    this.$message({
+                        type:'success',
+                        message:"修改成功"
+                    })
+                    this.form = {
+                         oldPwd:'',
+                         newPwd:'',
+                         newPwd1:'',
+                       }
+                    }
+                });
+          }
       }
 
     }

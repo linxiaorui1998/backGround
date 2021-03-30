@@ -41,7 +41,7 @@ export default {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    overflow-y: scroll;
+    // overflow: scroll;
     background-color: #f0f0f0;
     .top {
         flex: 0 0 30px;

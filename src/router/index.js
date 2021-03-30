@@ -68,7 +68,7 @@ const routes = [
           },
       },
       {
-        path: "/home/userManage.vue",
+        path: "/home/userManage",
         name: "UserManage",
         component: () =>
           import("../components/user/userManage.vue"),
@@ -83,6 +83,15 @@ const routes = [
           import("../components/order/order.vue"),
           meta:{
             title:'订单信息'
+          },
+      },
+      {
+        path: "/home/stock",
+        name: "Stock",
+        component: () =>
+          import("../components/stock/stock.vue"),
+          meta:{
+            title:'库存管理'
           },
       },
       {

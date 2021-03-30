@@ -44,6 +44,8 @@ export default {
     }
     .content {
       flex: auto;
+      overflow: hidden;
+      overflow-y: scroll;
       // background-color: purple;
     }
   }

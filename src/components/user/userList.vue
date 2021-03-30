@@ -19,16 +19,10 @@
      <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" >
        <el-form ref="form" :model="form" label-width="80px">
             <el-form-item label="用户名">
-                <el-input v-model="form.username"></el-input>
+                <el-input v-model="form.userName"></el-input>
             </el-form-item>
             <el-form-item label="密码">
                 <el-input v-model="form.Pwd"></el-input>
-            </el-form-item>
-             <el-form-item label="店铺名">
-                <el-input v-model="form.RestaurantName"></el-input>
-            </el-form-item>
-            <el-form-item label="店铺ID">
-                <el-input v-model="form.RestaurantId"></el-input>
             </el-form-item>
              <el-form-item label="类型">
                <el-select
@@ -47,8 +41,27 @@
                </el-select>
                 <!-- <el-input v-model="form.type"></el-input> -->
             </el-form-item>
+             <el-form-item label="店铺" v-if="form.type == '商家'">
+               <el-select
+                  v-model="form.RestaurantId"
+                  filterable
+                  clearable
+                  allow-create
+                  default-first-option
+                  placeholder="请选择店铺名称"
+                  @change='rest'>
+                  <el-option
+                    v-for="item in restaurantMsg"
+                    :key="item._id"
+                    :label="item.name"
+                    :value="item._id">
+                  </el-option>
+               </el-select>
+                <!-- <el-input v-model="form.type"></el-input> -->
+            </el-form-item>
+            
             <el-form-item>
-                <el-button type="primary" @click="addUser()">立即创建</el-button>
+                <el-button type="primary" @click="save()">保存</el-button>
                 <el-button  @click="dialogVisible = false">取消</el-button>
             </el-form-item>
         </el-form>
@@ -62,9 +75,10 @@ export default {
   data() {
     return {
       list: [],
+      type: 'add',
       dialogVisible:false,
       form:{
-          username:'',
+          userName:'',
           Pwd:'',
           type:'',
           RestaurantName:'',
@@ -79,7 +93,8 @@ export default {
           value:'管理员',
           lable:'管理员',
         }
-      ]
+      ],
+      restaurantMsg:[]
     };
   },
   mounted() {
@@ -96,18 +111,57 @@ export default {
           console.log(this.list, "列表");
         }
       });
+      axios({
+              method: "GET", //请求方式
+              url: "/api/backGround/user/restaurantMsg", //请求地址
+            }).then((res) => {
+              if (res.status === 200) {
+                this.restaurantMsg = res.data;
+                console.log(this.restaurantMsg, "列表");
+              }
+            });
     },
     edit:function(data){
-      console.log(data);
+      this.dialogVisible = true
+      this.type = 'edit'
+      this.form = data
     },
-    del:function(){
-
+    del:function(data){
+      axios({
+              method: "POST", //请求方式
+              url: "/api/backGround/user/delUser", //请求地址
+              data:{
+                _id:data._id
+              }
+            }).then((res) => {
+              if (res.status === 200) {
+                 this.init()
+                 this.$message({
+                   type:'success',
+                   message:'删除成功'
+                 })
+              }
+            });
     },
     add:function(){
+      this.form = {}
         this.dialogVisible = true
     },
-    addUser:function(){
-         axios({
+    rest:function(){
+      this.restaurantMsg.forEach(item => {
+        if(item._id === this.form.RestaurantId)
+        {
+          this.form.RestaurantName = item.name
+        }
+      })
+    },
+    save:function(){
+      if(this.form.type === '管理员') {
+        this.form.RestaurantName = ''
+        this.form.RestaurantId = ''
+      }
+      if(this.type == 'add') {
+           axios({
         method: "POST", //请求方式
         url: "/api/backGround/user/addUser", //请求地址
         data:this.form
@@ -121,6 +175,23 @@ export default {
           })
         }
       });
+      }else {
+         axios({
+          method: "POST", //请求方式
+          url: "/api/backGround/user/updateUser", //请求地址
+          data:this.form
+        }).then((res) => {
+          if (res.status === 200) {
+            this.dialogVisible = false
+            this.init()
+            this.$message({
+                type:'success',
+                message:'编辑成功'
+            })
+          }
+        });
+      }
+      
     }
   },
 
