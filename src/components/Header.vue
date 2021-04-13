@@ -6,9 +6,15 @@
                 探周边管理系统
             </div>
             <div class="operation">
-                <span class="icon iconfont icon-kuozhan" @click="fullScreen()"></span>
-                <span class="icon iconfont icon-menling-"></span>
-                <!-- <span></span> -->
+                <span class="icon iconfont icon-kuozhan" @click="fullScreen()" style="margin-right:20px"></span>
+                <!-- <el-badge is-dot="noadopt" class="item">
+                     <span class="icon iconfont icon-menling-"></span>
+                </el-badge> -->
+                <el-badge :value="noadopt" class="item" v-if="noadopt !== 0">
+                   <span class="icon iconfont icon-menling-"  @click="toPage()"></span>
+                </el-badge>
+                <span class="icon iconfont icon-menling-" v-else style="margin-right:20px" @click="toPage()"></span>
+
                 <el-dropdown class="drop" trigger="click">
                     <span class="el-dropdown-link" style="color:#fff">
                         {{user}}<i class="el-icon-arrow-down el-icon--right"></i>
@@ -55,11 +61,26 @@ export default {
                   oldPwd:'',
                   newPwd:'',
                   newPwd1:'',
-              }
+              },
+              noadopt: 0,
+              type:null
         }
     },
     mounted(){
         this.user = localStorage.getItem('username')
+        this.type = localStorage.getItem('type')
+        this.$EventBus.$on('noadopt',function(data){
+            this.noadopt = data
+            console.log("出发了",data);
+        })
+         axios({
+                method: "GET", //请求方式
+                url: "/api/backGround/coupon/noadopt", //请求地址
+                }).then((res) => {
+                    if(res.data[0].length > 0) {
+                        this.noadopt = res.data[0].length
+                    }
+                });
     },
     methods:{
         //实现全屏
@@ -84,6 +105,13 @@ export default {
       changPwd:function(){
           this.dialogVisible = true 
       },
+      toPage:function(){
+          if(this.type === '管理员') {
+               this.noadopt = 0
+               this.$router.push({name:'Adopt'})
+          }
+         
+      },
       save:function(){
           if(this.form.newPwd !== this.form.newPwd1 ) {
               this.$message.error("两次密码不相等")
@@ -104,6 +132,9 @@ export default {
                          newPwd:'',
                          newPwd1:'',
                        }
+                    }else {
+                        this.$message.error("修改有误")
+                        
                     }
                 });
           }
@@ -140,8 +171,11 @@ export default {
         span {
          flex-direction: row;
          font-size: 20px;
-         margin-right: 20px;
     }
+    }
+    .item {
+        margin-top: 10px;
+        margin-right: 40px;
     }
 }
 </style>

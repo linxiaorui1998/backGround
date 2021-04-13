@@ -96,7 +96,9 @@ export default {
             .then((res) => {
               //请求成功
               console.log(res, "chenggong");
-              localStorage.setItem("token", res.data);
+              localStorage.setItem("token", res.data.token);
+              localStorage.setItem("_id", res.data._id);
+              localStorage.setItem("type", res.data.type);
               this.$router.push("/home");
               this.$message({
                 type: "success",

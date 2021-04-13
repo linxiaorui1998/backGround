@@ -127,6 +127,7 @@ export default {
       this.form = data
     },
     del:function(data){
+      let that = this
       axios({
               method: "POST", //请求方式
               url: "/api/backGround/user/delUser", //请求地址
@@ -135,8 +136,8 @@ export default {
               }
             }).then((res) => {
               if (res.status === 200) {
-                 this.init()
-                 this.$message({
+                 that.init()
+                 that.$message({
                    type:'success',
                    message:'删除成功'
                  })
@@ -156,26 +157,31 @@ export default {
       })
     },
     save:function(){
+      let that = this
       if(this.form.type === '管理员') {
         this.form.RestaurantName = ''
         this.form.RestaurantId = ''
       }
       if(this.type == 'add') {
            axios({
-        method: "POST", //请求方式
-        url: "/api/backGround/user/addUser", //请求地址
-        data:this.form
+            method: "POST", //请求方式
+            url: "/api/backGround/user/addUser", //请求地址
+            data:this.form
       }).then((res) => {
+        console.log(res.status);
         if (res.status === 200) {
-          this.dialogVisible = false
-          this.init()
-          this.$message({
+          that.dialogVisible = false
+          that.init()
+          that.$message({
               type:'success',
               message:'添加成功'
           })
         }
+      }).catch(()=>{
+         this.$message.error('用户已存在')
       });
-      }else {
+      }
+      else {
          axios({
           method: "POST", //请求方式
           url: "/api/backGround/user/updateUser", //请求地址

@@ -8,7 +8,7 @@
         <el-table-column prop="introduce" label="介绍" width="160" align='center'> </el-table-column>
         <el-table-column prop="sold" label="已售" width="110" align='center'> </el-table-column>
         <el-table-column prop="guide" label="导购语" width="160" align='center'> </el-table-column>
-        <el-table-column prop="stock" label="库存" width="110" align='center'> </el-table-column>
+        <!-- <el-table-column prop="stock" label="库存" width="110" align='center'> </el-table-column> -->
         <el-table-column prop="company" label="单位" width="100" align='center'> </el-table-column>
         <el-table-column label="操作"  width="180" align='center'>
           <template slot-scope="scope">  
@@ -33,9 +33,9 @@
              <el-form-item label="价格">
                 <el-input v-model="form.price" ></el-input>
             </el-form-item>
-            <el-form-item label="库存">
+            <!-- <el-form-item label="库存">
                 <el-input v-model="form.stock"></el-input>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="单位">
                 <el-input v-model="form.company" ></el-input>
             </el-form-item>

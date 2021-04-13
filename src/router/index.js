@@ -29,6 +29,42 @@ const routes = [
           import("../components/Header.vue"),
       },
       {
+        path: "/home/coupon",
+        name: "Coupon",
+        component: () =>
+          import("../components/coupon/coupon"),
+          meta:{
+            title:'优惠套餐'
+          },
+      },
+      {
+        path: "/home/adopt",
+        name: "Adopt",
+        component: () =>
+          import("../components/adopt/adopt"),
+          meta:{
+            title:'信息审核'
+          },
+      },
+      {
+        path: "/home/restaurant",
+        name: "Restaurant",
+        component: () =>
+          import("../components/restaurant/restaurant"),
+          meta:{
+            title:'店铺管理'
+          },
+      },
+      {
+        path: "/home/banner",
+        name: "Banner",
+        component: () =>
+          import("../components/banner/banner"),
+          meta:{
+            title:'轮播图管理'
+          },
+      },
+      {
         path: "/home/menu",
         name: "Menu",
         component: () =>
@@ -111,7 +147,7 @@ const routes = [
           meta:{
             title:'收入信息'
           },
-      }
+      },
     ]
   },
 ];
