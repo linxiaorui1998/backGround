@@ -4,12 +4,17 @@
        <el-button type="primary" @click="dialogVisible = true" style="margin:10px 0">新增菜品</el-button>
        <el-table :data="tableData" border >
         <el-table-column prop="name" label="菜名" width="160" align='center'> </el-table-column>
-        <el-table-column prop="price" label="价格" width="110" align='center'> </el-table-column>
+          <el-table-column label="图片"  width="160" align='center'>
+            <template slot-scope="scope">  
+               <img :src="scope.row.image" alt="" style="width:70px;height:70px">
+            </template>
+         </el-table-column>
+         <el-table-column prop="price" label="价格" width="90" align='center'> </el-table-column>
         <el-table-column prop="introduce" label="介绍" width="160" align='center'> </el-table-column>
-        <el-table-column prop="sold" label="已售" width="110" align='center'> </el-table-column>
-        <el-table-column prop="guide" label="导购语" width="160" align='center'> </el-table-column>
+        <el-table-column prop="sold" label="已售" width="90" align='center'> </el-table-column>
+        <el-table-column prop="guide" label="导购语" width="140" align='center'> </el-table-column>
         <!-- <el-table-column prop="stock" label="库存" width="110" align='center'> </el-table-column> -->
-        <el-table-column prop="company" label="单位" width="100" align='center'> </el-table-column>
+        <el-table-column prop="company" label="单位" width="90" align='center'> </el-table-column>
         <el-table-column label="操作"  width="180" align='center'>
           <template slot-scope="scope">  
              <el-button type="primary" @click="edit(scope.row)">编辑</el-button>
@@ -45,6 +50,16 @@
             <el-form-item label="点赞数" v-if="this.type == 'edit'">
                 <el-input v-model="form.support"></el-input>
             </el-form-item>
+               <el-form-item label="菜品头像"  width="180">
+                  <el-upload
+                    action="/api/backGround/uploadFile/upload2"
+                    list-type="picture-card"
+                    :on-success="uploadImageSuccess"
+                    :limit=1
+                    :on-remove="handleRemove">
+                    <i class="el-icon-plus"></i>
+             </el-upload>
+            </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="save()">保存</el-button>
                 <el-button  @click="dialogVisible = false">取消</el-button>
@@ -61,18 +76,12 @@ export default {
       return {
           tableData:[],
           form:{
-              // image:'',
-              // name:'',
-              // introduce:'',//说明
-              // guide:'',
-              // price:'',
-              // sold: 0,//已卖出
-              // support: 0,//点赞数
-              // stock: '',//库存
-              // company: '',//单位
+            image:''
           },
           dialogVisible:false,
-          type:'add'
+          type:'add',
+          uploadBaseUrl:'https://upload-image1998.oss-cn-guangzhou.aliyuncs.com/',
+          imageUrl:''
       }
   },
   methods:{
@@ -86,6 +95,20 @@ export default {
                 console.log(this.tableData, "表格列表");
               }
             });
+      },
+      uploadImageSuccess:function(res){
+          this.form.image = this.uploadBaseUrl + res.imageUrl
+          console.log(this.form.image,"链接");
+          this.imageUrl = res.imageUrl
+      },
+      handleRemove:function(){
+            axios({
+            method: "POST", //请求方式
+            url: "/api/backGround/uploadFile/delImage", //请求地址
+            data: {
+                url:this.imageUrl
+            }
+          })
       },
       edit:function(data){
         this.dialogVisible = true

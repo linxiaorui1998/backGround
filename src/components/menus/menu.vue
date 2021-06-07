@@ -65,8 +65,7 @@ export default {
       },
       toPage(name){
         console.log(name);
-          this.$router.push({name:name}) 
-        //   console.log(1);
+          this.$router.push({name:name})
       },
       
     }

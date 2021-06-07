@@ -3,7 +3,7 @@
     <el-button
       type="primary"
       style="margin: 10px 0"
-      @click="dialogVisible = true"
+      @click="toPage()"
       >发布套餐</el-button
     >
     <el-table :data="tableData" border>
@@ -29,11 +29,7 @@
         align="center"
       >
         <template slot-scope="scope">
-          <p
-            :class="
-              scope.row.isadopt == 0 || scope.row.isadopt == 2 ? 'color' : ''
-            "
-          >
+          <p :class="scope.row.isadopt == 0 || scope.row.isadopt == 2 ? 'color' : ''">
             {{
               scope.row.isadopt == 0
                 ? "未审核"
@@ -46,50 +42,10 @@
       </el-table-column>
       <el-table-column label="操作" width="180" align="center">
         <template slot-scope="scope">
-          <el-button type="primary" @click="edit(scope.row)">编辑</el-button>
           <el-button type="success" @click="del(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-
-    <!-- 添加优惠套餐 -->
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="40%">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="套餐名">
-          <el-input v-model="form.name"></el-input>
-        </el-form-item>
-        <el-form-item label="套餐价格">
-          <el-input v-model="form.price"></el-input>
-        </el-form-item>
-        <el-form-item label="划线价">
-          <el-input v-model="form.lineactionPrice"></el-input>
-        </el-form-item>
-        <el-form-item label="已售">
-          <el-input v-model="form.sold"></el-input>
-        </el-form-item>
-        <el-form-item label="总数">
-          <el-input v-model="form.total"></el-input>
-        </el-form-item>
-        <el-form-item label="购买须知">
-          <el-input v-model="form.notice"></el-input>
-        </el-form-item>
-        <el-form-item label="套餐图片">
-          <el-upload
-            class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="save()">保存</el-button>
-          <el-button @click="dialogVisible = false">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
   </div>
 </template>
 
@@ -104,7 +60,8 @@ export default {
         restaurantID: localStorage.getItem("_id"),
         isadopt: false,
       },
-      imageUrl:''
+      imageUrl:'',
+      uploadBaseUrl:'https://upload-image1998.oss-cn-guangzhou.aliyuncs.com/',
     };
   },
   mounted() {
@@ -129,6 +86,24 @@ export default {
         }
       });
     },
+    toPage:function(){
+      this.$router.push({
+        name:'AddCoupon'
+      })
+    },
+    uploadImageSuccess:function(res){
+          this.form.image = this.uploadBaseUrl + res.imageUrl
+          this.imageUrl = res.imageUrl
+      },
+    handleRemove:function(){
+        axios({
+        method: "POST", //请求方式
+        url: "/api/backGround/uploadFile/delImage", //请求地址
+        data: {
+            url:this.imageUrl
+        }
+      })
+      },
     init: function () {
       axios({
         method: "GET", //请求方式
@@ -140,6 +115,7 @@ export default {
       });
     },
     del: function (data) {
+      console.log('删除',data);
       axios({
         method: "POST", //请求方式
         url: "/api/backGround/coupon/del", //请求地址

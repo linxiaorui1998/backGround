@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 module.exports = {
     devServer: {
       // 设置代理
@@ -7,7 +8,12 @@ module.exports = {
                     changeOrigin: true,
                     pathRewrite: { "^/api": "" }
             }
-      }
-    }
+      },
+    },
+    chainWebpack: (config) => {
+      config.plugin('provide').use(webpack.ProvidePlugin, [{
+        'window.Quill': 'quill'
+      }])
+  }
   };
   

@@ -37,6 +37,16 @@ const routes = [
             title:'优惠套餐'
           },
       },
+     
+      {
+        path: "/home/addCoupon",
+        name: "AddCoupon",
+        component: () =>
+          import("../components/coupon/addCoupon"),
+          meta:{
+            title:'添加优惠卷'
+          },
+      },
       {
         path: "/home/adopt",
         name: "Adopt",
@@ -65,6 +75,15 @@ const routes = [
           },
       },
       {
+        path: "/home/applyRefund",
+        name: "ApplyRefund",
+        component: () =>
+          import("../components/applyRefund/applyRefund"),
+          meta:{
+            title:'退款管理'
+          },
+      },
+      {
         path: "/home/menu",
         name: "Menu",
         component: () =>
@@ -75,6 +94,12 @@ const routes = [
         name: "Content",
         component: () =>
           import("../components/content/content.vue")
+      },
+      {
+        path: "/home/settled",
+        name: "Settled",
+        component: () =>
+          import("../components/settled/settled.vue")
       },
       {
         path: "/home/menuManage",
